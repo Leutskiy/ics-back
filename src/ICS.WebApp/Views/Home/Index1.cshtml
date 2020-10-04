@@ -1,0 +1,105 @@
+﻿@{
+    ViewBag.Title = "Приглашения";
+}
+
+@section Scripts {
+    <script>
+        var model = {
+            invitations: ko.observableArray(),
+            editor: {
+                id: ko.observable(""),
+                name: ko.observable(""),
+                visitGoal: ko.observable(""),
+                alienName: ko.observable(""),
+                visitCountry: ko.observable(""),
+            },
+            isNew: ko.observable(true),
+            displaySummary: ko.observable(true)
+        };
+
+        function sendAjaxRequest(httpMethod, callback, url, reqData) {
+            $.ajax("/api/invitation" + (url ? "/" + url : ""), {
+                type: httpMethod,
+                success: callback,
+                data: reqData
+            });
+        }
+
+        function getAllInvitations() {
+            sendAjaxRequest("GET", function (data) {
+                model.invitations.removeAll();
+                for (var i = 0; i < data.length; i++) {
+                    model.invitations.push(data[i]);
+                }
+            });
+        }
+
+        function handleSaveClick() {
+
+            var methodType = model.isNew  ? "POST" : "PUT"; 
+            sendAjaxRequest(methodType, function (newInvitation) {
+                if (model.isNew) {
+                    model.invitations.push(newInvitation);
+                }
+                else {
+                    var filteredInvitaionArray = ko.utils.arrayFilter(model.invitations(), function (invitation) {
+                        return invitation.Id == model.editor.id;
+                    });
+
+                    currentInvitaion = filteredInvitaionArray.pop();
+
+                    currentInvitaion.Name = model.editor.name;
+                    currentInvitaion.VisitGoal = model.editor.visitGoal;
+                    currentInvitaion.AlienName = model.editor.alienName;
+                    currentInvitaion.VisitCountry = model.editor.visitCountry;
+                }
+
+                model.displaySummary(true);
+            }, null, {
+                    Id: model.editor.id,
+                    Name: model.editor.name,
+                    VisitGoal: model.editor.visitGoal,
+                    AlienName: model.editor.alienName,
+                    VisitCountry: model.editor.visitCountry
+                });
+        }
+
+        function handleChangeClick(record) {
+
+            sendAjaxRequest("GET", function (data) {
+                model.editor.id = data.Id;
+                model.editor.name = data.Name;
+                model.editor.visitGoal = data.VisitGoal
+                model.editor.alienName = data.AlienName
+                model.editor.visitCountry = data.VisitCountry
+
+                model.isNew = false;
+                model.displaySummary(false);
+            }, record.Id);
+        }
+
+        function handleCreateClick() {
+            model.editor.name = "";
+            model.editor.alienName = "";
+            model.editor.visitGoal = "";
+            model.editor.visitCountry = "";
+
+            model.isNew = true;
+            model.displaySummary(false);
+        }
+
+        $(document).ready(function () {
+            getAllInvitations();
+            ko.applyBindings(model);
+        });
+    </script>
+
+}
+@section Body {
+<div data-bind="if: model.displaySummary">
+    @Html.Partial("InvitationView")
+</div>
+<div data-bind="ifnot: model.displaySummary">
+    @Html.Partial("InvitationEditor")
+</div>
+}

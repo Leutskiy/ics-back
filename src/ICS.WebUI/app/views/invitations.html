@@ -1,0 +1,53 @@
+﻿<div class="row">
+    <div class="col-md-2">
+        &nbsp;
+    </div>
+    <div class="col-md-8">
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Invitation ID</th>
+                    <th>Alien Name (RUS)</th>
+                    <th>Alien Name (ENG)</th>
+                    <th>Alien Email</th>
+                    <th>Alien Postcode</th>
+                    <th>Alien Home Phone Number</th>
+                    <th>Alien Work Phone Number</th>
+                    <th>Alien Mobile Phone Number</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-ng-repeat="invitation in invitations">
+                    <td>
+                        {{ invitation.id }}
+                    </td>
+                    <td>
+                        {{ invitation.alien.passport.nameRus }}
+                    </td>
+                    <td>
+                        {{ invitation.alien.passport.nameEng }}
+                    </td>
+                    <td>
+                        {{ invitation.alien.contact.email }}
+                    </td>
+                    <td>
+                        {{ invitation.alien.contact.postcode }}
+                    </td>
+                    <td>
+                        {{ invitation.alien.contact.homePhoneNumber }}
+                    </td>
+                    <td>
+                        {{ invitation.alien.contact.workPhoneNumber }}
+                    </td>
+                    <td>
+                        {{ invitation.alien.contact.mobilePhoneNumber }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-md-2">
+        &nbsp;
+    </div>
+</div>

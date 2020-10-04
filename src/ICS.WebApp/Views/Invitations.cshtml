@@ -1,0 +1,44 @@
+﻿<div>
+    <table>
+        <tr>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Phone numbers</th>
+        </tr>
+        <tbody>
+            @using (var contacts = Html.Foreach(m => m.Contacts))
+            {
+                <tr>
+                    <td style="vertical-align: top">
+                        @contacts.Html.TextBox(m => m.FirstName)
+                        <div>@contacts.Html.HyperlinkButton("Delete", "DeleteContact", "ContactsEditor", new { contactIndex = contacts.GetIndex() })</div>
+                    </td>
+                    <td style="vertical-align: top">
+                        @contacts.Html.TextBox(m => m.LastName)
+                    </td>
+                    <td>
+                        <table>
+                            <tbody>
+                                @using (var phones = contacts.Foreach(m => m.Phones))
+                                {
+                                    <tr>
+                                        <td>
+                                            @phones.Html.TextBox(m => m.Type)
+                                    </td>
+                                    <td>
+                                        @phones.Html.TextBox(m => m.Number)
+                                </td>
+                                <td>
+                                    @ko.Html.HyperlinkButton("Delete", "DeletePhone", "ContactsEditor", new { contactIndex = contacts.GetIndex(), phoneIndex = phones.GetIndex() })
+                            </td>
+                        </tr>
+                    }
+                            </tbody>
+                        </table>
+                        @ko.Html.HyperlinkButton("Add number", "AddPhone", "ContactsEditor", new { contactIndex = contacts.GetIndex() })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
